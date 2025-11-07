@@ -1,7 +1,12 @@
+# CH10 - CRUD with In-Memory Data
+# Purpose: Real data ke saath CRUD operations perform karna (without database)
+
 from fastapi import FastAPI
 
 app = FastAPI()
 
+# In-memory data store (list of dictionaries)
+# Production mein ye database hoti hai
 PRODUCTS = [
         {
             "id": 1,
@@ -23,50 +28,52 @@ PRODUCTS = [
         },
     ]
 
-# GET Request
-## Read or Fetch All Data
+# ============ READ ALL ============
 @app.get("/product")
 async def all_products():
-  return PRODUCTS
+  return PRODUCTS  # Puri list return karo
 
-## Read or Fetch Single Data
+# ============ READ SINGLE ============
+## ID se product find karo
 @app.get("/product/{product_id}")
 async def single_products(product_id:int):
+  # Loop chalake matching product dhundo
   for product in PRODUCTS:
     if product["id"] == product_id:
-      return product
+      return product  # Mila to return karo
   
-# POST Request
-## Create or Insert Data
+# ============ CREATE ============
+## Naya product list mein add karo
 @app.post("/product")
 async def create_product(new_product: dict):
-  PRODUCTS.append(new_product)
+  PRODUCTS.append(new_product)  # List mein append karo
   return {"status":"created", "new_product":new_product}
 
-# PUT Request
-## Update Complete Data
+# ============ UPDATE (Complete) ============
+## Pura product replace karo
 @app.put("/product/{product_id}")
 def update_product(product_id: int, new_updated_product: dict):
+  # enumerate - index ke saath loop
   for index, product in enumerate(PRODUCTS):
     if product["id"] == product_id:
-      PRODUCTS[index] = new_updated_product
+      PRODUCTS[index] = new_updated_product  # Complete replacement
       return {"status": "Updated", "product_id": product_id, "new updated product": new_updated_product}
 
 
-# PATCH Request
-## Update Partial Data
+# ============ UPDATE (Partial) ============
+## Sirf diye gaye fields update karo
 @app.patch("/product/{product_id}")
 def partial_product(product_id: int, new_updated_product: dict):
     for product in PRODUCTS:
         if product["id"] == product_id:
-            product.update(new_updated_product)
+            product.update(new_updated_product)  # Dictionary update method
             return {"status": "Partial updated", "product_id": product_id, "new updated product": product}
 
-# DELETE Request
-## Delete Data
+# ============ DELETE ============
+## Product ko list se remove karo
 @app.delete("/product/{product_id}")
 def delete_product(product_id: int):
     for index, product in enumerate(PRODUCTS):
         if product["id"] == product_id:
-            PRODUCTS.pop(index)
+            PRODUCTS.pop(index)  # Index se remove karo
             return {"status": "Deleted", "product_id": product_id}

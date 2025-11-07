@@ -1,7 +1,11 @@
-from fastapi import FastAPI, status
+# CH12 - Status Codes
+# Purpose: HTTP status codes ko routes mein define karna
+
+from fastapi import FastAPI, status  # status module import karo
 
 app = FastAPI()
 
+# Sample data
 PRODUCTS = [
         {
             "id": 1,
@@ -23,28 +27,27 @@ PRODUCTS = [
         },
     ]
 
-# GET Request
-## Read or Fetch All Data
+# ============ GET - 200 OK ============
+# Success response ke liye
 @app.get("/product", status_code=status.HTTP_200_OK)
 async def all_products():
   return PRODUCTS
 
-## Read or Fetch Single Data
 @app.get("/product/{product_id}", status_code=status.HTTP_200_OK)
 async def single_products(product_id:int):
   for product in PRODUCTS:
     if product["id"] == product_id:
       return product
   
-# POST Request
-## Create or Insert Data
+# ============ POST - 201 CREATED ============
+# Naya resource create hone par
 @app.post("/product", status_code=status.HTTP_201_CREATED)
 async def create_product(new_product: dict):
   PRODUCTS.append(new_product)
   return {"status":"created", "new_product":new_product}
 
-# PUT Request
-## Update Complete Data
+# ============ PUT - 200 OK ============
+# Update success hone par
 @app.put("/product/{product_id}", status_code=status.HTTP_200_OK)
 def update_product(product_id: int, new_updated_product: dict):
   for index, product in enumerate(PRODUCTS):
@@ -53,8 +56,7 @@ def update_product(product_id: int, new_updated_product: dict):
       return {"status": "Updated", "product_id": product_id, "new updated product": new_updated_product}
 
 
-# PATCH Request
-## Update Partial Data
+# ============ PATCH - 200 OK ============
 @app.patch("/product/{product_id}", status_code=status.HTTP_200_OK)
 def partial_product(product_id: int, new_updated_product: dict):
     for product in PRODUCTS:
@@ -62,11 +64,18 @@ def partial_product(product_id: int, new_updated_product: dict):
             product.update(new_updated_product)
             return {"status": "Partial updated", "product_id": product_id, "new updated product": product}
 
-# DELETE Request
-## Delete Data
+# ============ DELETE - 200 OK ============
 @app.delete("/product/{product_id}", status_code=status.HTTP_200_OK)
 def delete_product(product_id: int):
     for index, product in enumerate(PRODUCTS):
         if product["id"] == product_id:
             PRODUCTS.pop(index)
             return {"status": "Deleted", "product_id": product_id}
+
+# Common Status Codes:
+# 200 OK - Success
+# 201 Created - New resource created
+# 204 No Content - Delete success (no response body)
+# 400 Bad Request - Invalid input
+# 404 Not Found - Resource not found
+# 500 Internal Server Error - Server error

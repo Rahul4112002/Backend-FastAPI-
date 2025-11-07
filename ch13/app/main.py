@@ -1,6 +1,9 @@
-from fastapi import FastAPI, Query
-from typing import Annotated
-from pydantic import AfterValidator
+# CH13 - Advanced Query Parameter Validation
+# Purpose: Query parameters ko validate karna (Annotated & Query use karke)
+
+from fastapi import FastAPI, Query  # Query validator import karo
+from typing import Annotated  # Type hints ke liye
+from pydantic import AfterValidator  # Custom validation ke liye
 
 app = FastAPI()
 
@@ -10,7 +13,8 @@ PRODUCTS = [
     {"id": 3, "title": "Cotton Jacket", "price": 55.99, "description": "Great for outdoor activities and gifting."},
 ]
 
-# Basic Query Parameter
+# ============ BASIC QUERY PARAMETER ============
+# Simple search without validation
 # @app.get("/products")
 # async def get_products(search:str | None = None):
 #   if search:
@@ -22,7 +26,8 @@ PRODUCTS = [
 #     return filtered_products
 #   return PRODUCTS
 
-# Validation without Annotated
+# ============ VALIDATION WITHOUT ANNOTATED ============
+# max_length=5 - search maximum 5 characters ho sakta hai
 # @app.get("/products")
 # async def get_products(search:str | None = Query(default=None, max_length=5)):
 #   if search:
@@ -34,13 +39,14 @@ PRODUCTS = [
 #     return filtered_products
 #   return PRODUCTS
 
-# Validation with Annotated
+# ============ VALIDATION WITH ANNOTATED ============
+# Modern way - type aur validation separate
 # @app.get("/products")
 # async def get_products(
 #   search: 
 #     Annotated[
-#       str | None, 
-#       Query(max_length=5)
+#       str | None,  # Type hint
+#       Query(max_length=5)  # Validation
 #       ] = None):
 #   if search:
 #     search_lower = search.lower()
@@ -52,12 +58,13 @@ PRODUCTS = [
 #   return PRODUCTS
 
 # Why use Annotated
-## Clear separation of the type
-## Better support in some editors and tools for showing metadata and validations directly in the type hints
-## Requires Python 3.9+ and FastAPI 0.95+; more modern and recommended approach
-## FastAPI 0.95+ officially recommends using Annotated for dependencies and parameters
+## Clear separation - type aur validation alag
+## Better editor support - tools mein metadata show hota hai
+## Python 3.9+ aur FastAPI 0.95+ required
+## FastAPI 0.95+ officially recommends (modern approach)
 
-# # Required Parameter
+# ============ REQUIRED PARAMETER ============
+# min_length=3 - kam se kam 3 characters zaroori
 # @app.get("/products/")
 # async def get_products(search: Annotated[str, Query(min_length=3)]):
 #     if search:
@@ -69,7 +76,8 @@ PRODUCTS = [
 #         return filtered_products
 #     return PRODUCTS
 
-## Add regular expressions
+# ============ REGEX VALIDATION ============
+# pattern="^[a-z]+$" - sirf lowercase letters allowed
 # @app.get("/products/")
 # async def get_products(search: Annotated[str | None, Query(min_length=3, pattern="^[a-z]+$")] = None):
 #     if search:
@@ -81,7 +89,8 @@ PRODUCTS = [
 #         return filtered_products
 #     return PRODUCTS
 
-# # Multiple Search Terms (List)
+# ============ LIST OF VALUES ============
+# Multiple search terms accept karo
 # @app.get("/products")
 # async def get_products(search: Annotated[list[str] | None, Query()] = None):
 #   if search:
@@ -93,7 +102,8 @@ PRODUCTS = [
 #     return filtered_products
 #   return PRODUCTS
 
-## Alias parameters
+# ============ ALIAS PARAMETER ============
+# URL mein "q" use karo but code mein "search" naam se access
 # @app.get("/products/")
 # async def get_products(search: Annotated[str | None, Query(alias="q")] = None):
 #     if search:
@@ -105,7 +115,8 @@ PRODUCTS = [
 #         return filtered_products
 #     return PRODUCTS
 
-# # Adding Metadata
+# ============ METADATA FOR DOCS ============
+# title & description documentation mein dikhega
 # @app.get("/products/")
 # async def get_products(search: Annotated[
 #         str | None,
@@ -121,7 +132,8 @@ PRODUCTS = [
 #         return filtered_products
 #     return PRODUCTS
 
-# # Deprecating parameters
+# ============ DEPRECATED PARAMETER ============
+# deprecated=True - docs mein warning dikhega (purana parameter)
 # @app.get("/products/")
 # async def get_products(search: Annotated[
 #         str | None,
@@ -137,9 +149,9 @@ PRODUCTS = [
 #         return filtered_products
 #     return PRODUCTS
 
-## Custom Validation
+# ============ CUSTOM VALIDATION ============
 # def check_valid_id(id: str):
-#   if not id.startswith("prod-"):
+#   if not id.startswith("prod-"):  # Check custom rule
 #     raise ValueError("ID must start with 'prod-'")
 #   return id
 
