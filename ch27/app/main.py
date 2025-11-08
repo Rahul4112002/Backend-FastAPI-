@@ -1,14 +1,16 @@
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 from typing import Annotated
+
+# FastAPI app banao
 app = FastAPI()
 
-# application/x-www-form-urlencoded
-# multipart/form-data
+# Form data types: application/x-www-form-urlencoded or multipart/form-data
 
-# # Simple HTML form for testing
+# Simple HTML form for testing (GET -> form page)
 @app.get("/", response_class=HTMLResponse)
 async def get_form():
+    # Chhota sa HTML form jo username/password bhejta hai POST /login/ par
     return """
     <html>
         <body>
@@ -24,10 +26,14 @@ async def get_form():
     </html>
     """
 
+
 @app.post("/login/")
 async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+    # Form se aaya username return karo, aur password ka length (safety ke liye)
     return {"username": username, "password_length": len(password)}
 
+
+# Example with validation (commented): Form() me min_length/max_length add kar sakte ho
 # @app.post("/login/")
 # async def login(
 #     username: Annotated[str, Form(min_length=3)], 
