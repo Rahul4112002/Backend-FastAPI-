@@ -23,7 +23,8 @@ def home():
 # ==================== INSTALLATION (Kaise Install Karein?) ====================
 # Terminal mein ye command run karein:
 # pip install "fastapi[standard]"
-# 
+# random commit
+
 # Explanation:
 # - pip: Python package installer
 # - install: Install karne ka command
