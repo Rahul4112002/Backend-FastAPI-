@@ -1,22 +1,23 @@
+# Tables aur services import karo
 from tables import create_tables
 from services import *
 
-# Create Tables
-create_tables()
+# Database tables create karo
+create_tables()  # Tables ko database mein banao
 
-# Create Data
+# Naya user add karo - Create operation
 # create_user("sonam", "sonam@example.com")
 # create_user("raj", "raj@example.com")
 # create_post(1, "Hello World", "This is Sonam's first post")
 # create_post(2, "Raj's Post", "Hi from Raj!")
 
-# Read data
+# Data fetch karo - Read operations
 # print(get_user_by_id(1))
 # print(get_all_users())
 # print(get_posts_by_user(2))
 
-# Update data
+# Data update karo - Update operation
 # update_user_email(1, "sonam@newdomain.com")
 
-# Delete Data
+# Data delete karo - Delete operation
 # delete_post(2)
